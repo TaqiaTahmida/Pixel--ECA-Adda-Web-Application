@@ -15,9 +15,9 @@
         </div>
 
         <div class="grid grid-cols-3 gap-4">
-            <img src="/landing/images/achievements/1.jpg" class="rounded-xl hover:scale-105 transition">
-            <img src="/landing/images/achievements/2.jpg" class="rounded-xl hover:scale-105 transition">
-            <img src="/landing/images/achievements/3.jpg" class="rounded-xl hover:scale-105 transition">
+            <img src="/landing/images/achievements/1.png" class="rounded-xl hover:scale-105 transition">
+            <img src="/landing/images/achievements/2.png" class="rounded-xl hover:scale-105 transition">
+            <img src="/landing/images/achievements/3.png" class="rounded-xl hover:scale-105 transition">
         </div>
 
     </div>

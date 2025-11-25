@@ -4,7 +4,7 @@
         <div class="flex items-center gap-2">
             <img src="/landing/images/logo.png" class="w-10" alt="logo">
         </div>
-
+<!--
         <ul class="hidden md:flex gap-10 font-medium text-gray-700">
             <li><a href="#" class="hover:text-orange-500">Courses</a></li>
             <li><a href="#" class="hover:text-orange-500">Book</a></li>
@@ -12,7 +12,7 @@
             <li><a href="#" class="hover:text-orange-500">Blog</a></li>
             <li><a href="#" class="hover:text-orange-500">About Us</a></li>
         </ul>
-
+-->
         <div class="flex gap-4">
             <a href="/register/step1" 
                class="px-5 py-2 border-2 border-blue-600 text-blue-600 rounded-lg font-semibold hover:bg-blue-600 hover:text-white transition">

@@ -3,7 +3,7 @@
 
         <div class="flex flex-col justify-center">
             <h1 class="text-6xl font-extrabold leading-tight">
-                ADDA IS NOW<br> MORE <span class="text-orange-500">FUN</span>
+                ADDA IS NOW<br> MORE <span class="text-orange-500">EXCITING!</span>
             </h1>
 
             <p class="mt-6 text-lg text-gray-600">

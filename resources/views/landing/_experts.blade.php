@@ -5,7 +5,7 @@
 
         <div class="grid grid-cols-5 gap-6">
 
-            @foreach (['exp1.jpg','exp2.jpg','exp3.jpg','exp4.jpg','exp5.jpg'] as $exp)
+            @foreach (['exp1.png','exp2.png','exp3.png','exp4.png','exp5.png'] as $exp)
                 <img src="/landing/images/experts/{{ $exp }}" 
                      class="rounded-2xl shadow-lg hover:scale-110 transition duration-300">
             @endforeach

@@ -16,9 +16,9 @@
         </div>
 
         <div class="grid grid-cols-3 gap-4">
-            <img src="/landing/images/community/1.jpg" class="rounded-xl hover:scale-105 transition">
-            <img src="/landing/images/community/2.jpg" class="rounded-xl hover:scale-105 transition">
-            <img src="/landing/images/community/3.jpg" class="rounded-xl hover:scale-105 transition">
+            <img src="/landing/images/community/1.png" class="rounded-xl hover:scale-105 transition">
+            <img src="/landing/images/community/2.png" class="rounded-xl hover:scale-105 transition">
+            <img src="/landing/images/community/3.png" class="rounded-xl hover:scale-105 transition">
         </div>
 
     </div>
