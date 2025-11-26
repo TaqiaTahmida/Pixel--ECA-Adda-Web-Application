@@ -4,91 +4,104 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use App\Models\User;
-use App\Mail\OtpMail;
+use App\Models\Admin;
 use Illuminate\Support\Facades\Mail;
+use App\Mail\OtpMail;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class AdminLoginController extends Controller
 {
+    /**
+     * Show admin login page
+     */
     public function showLoginForm()
     {
         return view('auth.admin-login');
     }
 
+
+    /**
+     * Step 1: Admin enters email → OTP is sent
+     */
     public function login(Request $request)
     {
-        // validate basic login
         $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|string',
+            'email' => 'required|email'
         ]);
 
-        $user = User::where('email', $request->email)->where('role', 'admin')->first();
+        $admin = Admin::where('email', $request->email)->first();
 
-        if (! $user || ! Hash::check($request->password, $user->password)) {
-            return back()->withErrors(['email' => 'Invalid admin credentials.']);
+        if (!$admin) {
+            return back()->withErrors(['email' => 'Admin not found']);
         }
 
-        // generate OTP and send
+        // Generate OTP
         $otp = rand(100000, 999999);
-        $user->otp_code = $otp;
-        $user->otp_expires_at = Carbon::now()->addMinutes(10);
-        $user->save();
 
-        Mail::to($user->email)->send(new OtpMail($otp, $user->name, 'Admin Login'));
+        // Save OTP to database
+        $admin->otp_code = $otp;
+        $admin->otp_expires_at = Carbon::now()->addMinutes(5);
+        $admin->save();
 
-        // store admin id in session to verify OTP next
-        session(['admin_pending_id' => $user->id]);
+        // Send OTP
+        Mail::to($admin->email)->send(new OtpMail($otp));
 
-        return redirect()->route('admin.login.otp')->with('status', 'OTP sent to admin email.');
+        // Store email temporarily for OTP page
+        session(['admin_email' => $admin->email]);
+
+        return redirect()->route('admin.login.otp');
     }
 
+
+    /**
+     * Show OTP verification page
+     */
     public function showOtpForm()
     {
+        // If no email stored, go back to login
+        if (!session('admin_email')) {
+            return redirect()->route('admin.login');
+        }
+
         return view('auth.admin-login-otp');
     }
 
+
+    /**
+     * Step 2: Verify OTP
+     */
     public function verifyOtp(Request $request)
     {
         $request->validate([
-            'otp' => 'required|string'
+            'otp' => 'required|numeric'
         ]);
 
-        $adminId = session('admin_pending_id');
+        $email = session('admin_email');
 
-        if (! $adminId) {
-            return redirect()->route('admin.login')->withErrors(['email' => 'Please login with password first.']);
+        $admin = Admin::where('email', $email)->first();
+
+        if (!$admin) {
+            return back()->withErrors(['otp' => 'Admin not found']);
         }
 
-        $user = User::find($adminId);
-
-        if (! $user) {
-            return redirect()->route('admin.login')->withErrors(['email' => 'Admin not found.']);
+        // Check OTP validity
+        if (
+            $admin->otp_code !== $request->otp ||
+            Carbon::now()->greaterThan($admin->otp_expires_at)
+        ) {
+            return back()->withErrors(['otp' => 'Invalid or expired OTP']);
         }
 
-        if (!$user->otp_code || !$user->otp_expires_at || Carbon::now()->greaterThan($user->otp_expires_at)) {
-            return back()->withErrors(['otp' => 'OTP expired.']);
-        }
+        // Clear OTP after success
+        $admin->otp_code = null;
+        $admin->otp_expires_at = null;
+        $admin->save();
 
-        if ($user->otp_code !== $request->otp) {
-            return back()->withErrors(['otp' => 'Invalid OTP.']);
-        }
+        // Login as admin
+        Auth::guard('admin')->login($admin);
 
-        // clear otp and session
-        $user->otp_code = null;
-        $user->otp_expires_at = null;
-        $user->save();
-
-        session()->forget('admin_pending_id');
-
-        // login the admin
-        Auth::login($user);
-
-        // redirect admin dashboard (create later)
-        return redirect('/admin')->with('success', 'Admin logged in.');
+        return redirect('/admin/dashboard');
     }
 }
 ?>

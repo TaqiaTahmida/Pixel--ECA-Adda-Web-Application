@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 
 class RegisterController extends Controller
@@ -91,7 +92,7 @@ class RegisterController extends Controller
         $request->session()->forget('register.data');
 
         // login the user
-        auth()->login($user);
+        Auth::login($user);
 
         return redirect('/')->with('success', 'Registration complete. Welcome!');
     }
