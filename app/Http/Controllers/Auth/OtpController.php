@@ -39,7 +39,7 @@ class OtpController extends Controller
         // login
         Auth::login($user);
 
-        return redirect('/')->with('success', 'Logged in successfully.');
+        // ✅ Redirect to dashboard instead of landing
+        return redirect()->route('dashboard.index')->with('success', 'Logged in successfully.');
     }
 }
-?>

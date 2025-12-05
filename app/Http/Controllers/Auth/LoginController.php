@@ -46,5 +46,10 @@ class LoginController extends Controller
         $email = $request->query('email');
         return view('auth.login-otp', compact('email'));
     }
+
+    protected function authenticated(Request $request, $user)
+{
+    return redirect('/dashboard/index');
+}
 }
 ?>
