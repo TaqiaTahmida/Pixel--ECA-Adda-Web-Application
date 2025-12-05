@@ -15,6 +15,12 @@ use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\OneToOneController;
 use App\Http\Controllers\User\CalendarController;
 use App\Http\Controllers\User\EventController;
+use App\Http\Controllers\Admin\AdminHomeController;
+use App\Http\Controllers\Admin\RegistrationController;
+use App\Http\Controllers\Admin\EnrollmentController;
+use App\Http\Controllers\Admin\QueryController;
+use App\Http\Controllers\SessionController; // if you have this
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +39,11 @@ Route::post('/login', [LoginController::class, 'sendOtp'])->name('login.sendOtp'
 Route::get('/login/otp', [LoginController::class, 'showOtpForm'])->name('login.otp');
 Route::post('/login/verify', [OtpController::class, 'verifyOtp'])->name('login.verify');
 
+Route::post('/logout', function () {
+    Auth::logout();
+    return redirect('/')->with('success', 'Logged out successfully.');
+})->name('logout');
+
 /*
 |--------------------------------------------------------------------------
 | USER REGISTRATION (Multi-step)
@@ -40,16 +51,14 @@ Route::post('/login/verify', [OtpController::class, 'verifyOtp'])->name('login.v
 */
 Route::get('/register/step1', [RegisterController::class, 'step1'])->name('register.step1');
 Route::post('/register/step1', [RegisterController::class, 'storeStep1'])->name('register.storeStep1');
-
 Route::get('/register/step2', [RegisterController::class, 'step2'])->name('register.step2');
 Route::post('/register/step2', [RegisterController::class, 'storeStep2'])->name('register.storeStep2');
-
 Route::get('/register/step3', [RegisterController::class, 'step3'])->name('register.step3');
 Route::post('/register/step3', [RegisterController::class, 'complete'])->name('register.complete');
 
 /*
 |--------------------------------------------------------------------------
-| ECA ROUTES
+| ECA ROUTES (User side)
 |--------------------------------------------------------------------------
 */
 Route::get('/eca', [ECAController::class, 'index'])->name('eca.index');
@@ -57,50 +66,74 @@ Route::get('/eca/{id}', [ECAController::class, 'show'])->name('eca.show');
 Route::post('/eca/{id}/join', [ECAController::class, 'join'])->middleware('auth')->name('eca.join');
 Route::get('/my-ecas', [ECAController::class, 'myEcas'])->middleware('auth')->name('eca.my');
 
+/*
+|--------------------------------------------------------------------------
+| USER DASHBOARD
+|--------------------------------------------------------------------------
+*/
 Route::middleware(['auth'])->prefix('dashboard')->group(function () {
-    // Dashboard home
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
 
-    // Profile Management
+    // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('dashboard.profile');
     Route::put('/profile', [ProfileController::class, 'update'])->name('dashboard.profile.update');
     Route::get('/subscription', [ProfileController::class, 'subscription'])->name('dashboard.subscription');
     Route::get('/security', [ProfileController::class, 'security'])->name('dashboard.security');
     Route::put('/security', [ProfileController::class, 'updatePassword'])->name('dashboard.password.update');
 
-    // AI Advisor
-    Route::get('/aidash', [AIController::class, 'index'])->name('dashboard.aidash');
+    // AI Advisor (if you have AIController)
+    Route::get('/aidash', [\App\Http\Controllers\AIController::class, 'index'])->name('dashboard.aidash');
 
     // ECAs
-    Route::get('/ecas', [EcaController::class, 'index'])->name('dashboard.ecas');
+    Route::get('/ecas', [ECAController::class, 'index'])->name('dashboard.ecas');
 
-    // Calendar (default tab)
+    // Calendar
     Route::get('/calendar', [CalendarController::class, 'myEvents'])->name('calendar.my-events');
     Route::get('/calendar/deadlines', [CalendarController::class, 'deadlines'])->name('calendar.deadlines');
     Route::get('/calendar/sessions', [CalendarController::class, 'sessions'])->name('calendar.sessions');
 
-    // Events CRUD
+    // Events
     Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
     Route::post('/events/store', [EventController::class, 'store'])->name('events.store');
     Route::get('/events/{event}/edit', [EventController::class, 'edit'])->name('events.edit');
     Route::put('/events/{event}', [EventController::class, 'update'])->name('events.update');
     Route::delete('/events/{event}', [EventController::class, 'destroy'])->name('events.destroy');
-    Route::get('/calendar/my-events', [EventController::class, 'index'])->name('calendar.my-events');
-
-    // Tier 2 Session
-    Route::get('/session', [SessionController::class, 'index'])->name('dashboard.session');
 });
 
 /*
 |--------------------------------------------------------------------------
-| ADMIN DASHBOARD + ECA MANAGEMENT
+| ADMIN DASHBOARD + MANAGEMENT
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth:admin'])->prefix('admin')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
+Route::prefix('admin')->middleware(['auth:admin'])->group(function () {
+    Route::get('/dashboard', [AdminHomeController::class, 'index'])->name('admin.dashboard');
 
+    // ECA Management
     Route::resource('eca', AdminEcaController::class);
+
+    // Registrations
+    Route::get('/registrations', [RegistrationController::class, 'index'])->name('admin.registrations.index');
+    Route::get('/registrations/{user}', [RegistrationController::class, 'show'])->name('admin.registrations.show');
+    Route::post('/registrations/{user}/approve', [RegistrationController::class, 'approve'])->name('admin.registrations.approve');
+    Route::post('/registrations/{user}/correction', [RegistrationController::class, 'requestCorrection'])->name('admin.registrations.correction');
+    Route::post('/registrations/{user}/reject', [RegistrationController::class, 'reject'])->name('admin.registrations.reject');
+
+    // Enrollments
+    Route::get('/enrollments', [EnrollmentController::class, 'index'])->name('admin.enrollments.index');
+    Route::post('/enrollments/{enrollment}/done', [EnrollmentController::class, 'markDone'])->name('admin.enrollments.done');
+
+    // Queries
+    Route::get('/queries', [QueryController::class, 'index'])->name('admin.queries.index');
+    Route::get('/queries/{query}', [QueryController::class, 'show'])->name('admin.queries.show');
+    Route::post('/queries/{query}/reply', [QueryController::class, 'reply'])->name('admin.queries.reply');
 });
 
+/*
+|--------------------------------------------------------------------------
+| ADMIN LOGIN (OTP)
+|--------------------------------------------------------------------------
+*/
+Route::get('/admin/login', [AdminLoginController::class, 'showLoginForm'])->name('admin.login');
+Route::post('/admin/login', [AdminLoginController::class, 'login'])->name('admin.login.post');
+Route::get('/admin/login/otp', [AdminLoginController::class, 'showOtpForm'])->name('admin.login.otp');
+Route::post('/admin/login/verify', [AdminLoginController::class, 'verifyOtp'])->name('admin.login.verify');

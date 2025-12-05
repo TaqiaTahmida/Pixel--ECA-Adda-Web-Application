@@ -19,9 +19,19 @@ class Eca extends Model
         'level',
     ];
 
+    /**
+     * Users who joined this ECA (pivot table eca_user).
+     */
     public function users()
     {
         return $this->belongsToMany(User::class, 'eca_user');
     }
+
+    /**
+     * Enrollment records for this ECA.
+     */
+    public function enrollments()
+    {
+        return $this->hasMany(EcaEnrollment::class);
+    }
 }
-?>
