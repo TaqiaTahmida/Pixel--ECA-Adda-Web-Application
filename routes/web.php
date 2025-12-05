@@ -105,27 +105,28 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function () {
 | ADMIN DASHBOARD + MANAGEMENT
 |--------------------------------------------------------------------------
 */
-Route::prefix('admin')->middleware(['auth:admin'])->group(function () {
-    Route::get('/dashboard', [AdminHomeController::class, 'index'])->name('admin.dashboard');
+Route::prefix('admin')->middleware(['auth:admin'])->name('admin.')->group(function () {
+    // Dashboard
+    Route::get('/dashboard', [AdminHomeController::class, 'index'])->name('dashboard');
 
     // ECA Management
-    Route::resource('eca', AdminEcaController::class);
+    Route::resource('ecas', AdminEcaController::class);
 
     // Registrations
-    Route::get('/registrations', [RegistrationController::class, 'index'])->name('admin.registrations.index');
-    Route::get('/registrations/{user}', [RegistrationController::class, 'show'])->name('admin.registrations.show');
-    Route::post('/registrations/{user}/approve', [RegistrationController::class, 'approve'])->name('admin.registrations.approve');
-    Route::post('/registrations/{user}/correction', [RegistrationController::class, 'requestCorrection'])->name('admin.registrations.correction');
-    Route::post('/registrations/{user}/reject', [RegistrationController::class, 'reject'])->name('admin.registrations.reject');
+    Route::get('/registrations', [RegistrationController::class, 'index'])->name('registrations.index');
+    Route::get('/registrations/{user}', [RegistrationController::class, 'show'])->name('registrations.show');
+    Route::post('/registrations/{user}/approve', [RegistrationController::class, 'approve'])->name('registrations.approve');
+    Route::post('/registrations/{user}/correction', [RegistrationController::class, 'requestCorrection'])->name('registrations.correction');
+    Route::post('/registrations/{user}/reject', [RegistrationController::class, 'reject'])->name('registrations.reject');
 
     // Enrollments
-    Route::get('/enrollments', [EnrollmentController::class, 'index'])->name('admin.enrollments.index');
-    Route::post('/enrollments/{enrollment}/done', [EnrollmentController::class, 'markDone'])->name('admin.enrollments.done');
+    Route::get('/enrollments', [EnrollmentController::class, 'index'])->name('enrollments.index');
+    Route::post('/enrollments/{enrollment}/done', [EnrollmentController::class, 'markDone'])->name('enrollments.done');
 
     // Queries
-    Route::get('/queries', [QueryController::class, 'index'])->name('admin.queries.index');
-    Route::get('/queries/{query}', [QueryController::class, 'show'])->name('admin.queries.show');
-    Route::post('/queries/{query}/reply', [QueryController::class, 'reply'])->name('admin.queries.reply');
+    Route::get('/queries', [QueryController::class, 'index'])->name('queries.index');
+    Route::get('/queries/{query}', [QueryController::class, 'show'])->name('queries.show');
+    Route::post('/queries/{query}/reply', [QueryController::class, 'reply'])->name('queries.reply');
 });
 
 /*
@@ -133,7 +134,9 @@ Route::prefix('admin')->middleware(['auth:admin'])->group(function () {
 | ADMIN LOGIN (OTP)
 |--------------------------------------------------------------------------
 */
-Route::get('/admin/login', [AdminLoginController::class, 'showLoginForm'])->name('admin.login');
-Route::post('/admin/login', [AdminLoginController::class, 'login'])->name('admin.login.post');
-Route::get('/admin/login/otp', [AdminLoginController::class, 'showOtpForm'])->name('admin.login.otp');
-Route::post('/admin/login/verify', [AdminLoginController::class, 'verifyOtp'])->name('admin.login.verify');
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/login', [AdminLoginController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AdminLoginController::class, 'login'])->name('login.post');
+    Route::get('/login/otp', [AdminLoginController::class, 'showOtpForm'])->name('login.otp');
+    Route::post('/login/verify', [AdminLoginController::class, 'verifyOtp'])->name('login.verify');
+});
