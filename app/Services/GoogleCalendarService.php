@@ -30,3 +30,4 @@ class GoogleCalendarService
         return $events->getItems();
     }
 }
+?>

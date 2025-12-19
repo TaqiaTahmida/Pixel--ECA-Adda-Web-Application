@@ -10,6 +10,11 @@
 
     <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 space-y-6">
         <div class="space-y-1">
+            <p class="text-xs uppercase tracking-wide text-gray-400">Subject</p>
+            <p class="text-sm font-medium text-gray-900">{{ $query->subject ?? 'No subject' }}</p>
+        </div>
+
+        <div class="space-y-1">
             <p class="text-xs uppercase tracking-wide text-gray-400">Message</p>
             <p class="text-sm text-gray-700 leading-relaxed">{{ $query->message }}</p>
         </div>

@@ -10,8 +10,14 @@ class Event extends Model
         'user_id', 'title', 'type', 'start_time', 'end_time', 'reminder', 'description'
     ];
 
+    protected $casts = [
+        'start_time' => 'datetime',
+        'end_time' => 'datetime',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 }
+?>

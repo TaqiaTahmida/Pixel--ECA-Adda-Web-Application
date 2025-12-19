@@ -10,42 +10,42 @@ use Illuminate\Support\Facades\Auth;
 class EventController extends Controller
 {
     public function create()
-{
-    return view('dashboard.events.create');
-}
-
-public function store(Request $request)
-{
-    $request->validate([
-        'title' => 'required|string|max:255',
-        'type' => 'required|in:Workshop,Webinar,Deadline,Other',
-        'start_time' => 'required|date',
-        'end_time' => 'nullable|date|after_or_equal:start_time',
-        'reminder' => 'nullable|string',
-        'description' => 'nullable|string',
-    ]);
-
-    Event::create([
-        'user_id' => Auth::id(),
-        'title' => $request->title,
-        'type' => $request->type,
-        'start_time' => $request->start_time,
-        'end_time' => $request->end_time,
-        'reminder' => $request->reminder,
-        'description' => $request->description,
-    ]);
-
-    return redirect()->route('calendar.my-events')->with('success', 'Event created successfully!');
-}
-
-public function index()
-{
-    $events = Event::where('user_id', Auth::id())->latest()->get();
-    return view('dashboard.events.my-events', compact('events'));
-}
- public function edit(Event $event)
     {
-        // Ensure only the owner can edit
+        return view('dashboard.events.create');
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'type' => 'required|in:Workshop,Webinar,Deadline,Other',
+            'start_time' => 'required|date',
+            'end_time' => 'nullable|date|after_or_equal:start_time',
+            'reminder' => 'nullable|string',
+            'description' => 'nullable|string',
+        ]);
+
+        Event::create([
+            'user_id' => Auth::id(),
+            'title' => $validated['title'],
+            'type' => $validated['type'],
+            'start_time' => $validated['start_time'],
+            'end_time' => $validated['end_time'] ?? null,
+            'reminder' => $validated['reminder'] ?? null,
+            'description' => $validated['description'] ?? null,
+        ]);
+
+        return redirect()->route('calendar.my-events')->with('success', 'Event created successfully!');
+    }
+
+    public function index()
+    {
+        $events = Event::where('user_id', Auth::id())->latest()->get();
+        return view('dashboard.events.my-events', compact('events'));
+    }
+
+    public function edit(Event $event)
+    {
         if ($event->user_id !== Auth::id()) {
             abort(403);
         }
@@ -57,9 +57,9 @@ public function index()
     {
         if ($event->user_id !== Auth::id()) {
             abort(403);
-            }
+        }
 
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
             'type' => 'required|in:Workshop,Webinar,Deadline,Other',
             'start_time' => 'required|date',
@@ -68,7 +68,14 @@ public function index()
             'description' => 'nullable|string',
         ]);
 
-        $event->update($request->all());
+        $event->update([
+            'title' => $validated['title'],
+            'type' => $validated['type'],
+            'start_time' => $validated['start_time'],
+            'end_time' => $validated['end_time'] ?? null,
+            'reminder' => $validated['reminder'] ?? null,
+            'description' => $validated['description'] ?? null,
+        ]);
 
         return redirect()->route('calendar.my-events')->with('success', 'Event updated successfully!');
     }
@@ -83,3 +90,4 @@ public function index()
         return redirect()->route('calendar.my-events')->with('success', 'Event deleted successfully!');
     }
 }
+?>

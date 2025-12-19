@@ -23,10 +23,17 @@
         />
 
         <x-dashboard-card 
+            title="Queries & Support" 
+            text="Send a question or complaint to the admin team" 
+            route="dashboard.query.create" 
+            button="Send a Query" 
+        />
+
+        <x-dashboard-card 
             title="AI Advisor" 
             text="Smart recommendations for your growth" 
-            route="dashboard.index" 
-            button="Coming Soon" 
+            route="dashboard.aidash" 
+            button="Chat with AI" 
         />
 
         <x-dashboard-card 

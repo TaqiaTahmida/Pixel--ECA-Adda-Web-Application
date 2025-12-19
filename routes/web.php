@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 // Controllers
 use App\Http\Controllers\LandingController;
@@ -10,19 +11,27 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\Auth\OtpController;
+
 use App\Http\Controllers\ECAController;
-use App\Http\Controllers\Admin\AdminEcaController;
+use App\Http\Controllers\OneToOneController;
+use App\Http\Controllers\SessionController; 
+use App\Http\Controllers\GeminiTestController; 
+
 use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\User\ProfileController;
-use App\Http\Controllers\OneToOneController;
 use App\Http\Controllers\User\CalendarController;
 use App\Http\Controllers\User\EventController;
+use App\Http\Controllers\User\AIController;
+use App\Http\Controllers\User\QueryController as UserQueryController;
+
 use App\Http\Controllers\Admin\AdminHomeController;
 use App\Http\Controllers\Admin\RegistrationController;
 use App\Http\Controllers\Admin\EnrollmentController;
 use App\Http\Controllers\Admin\QueryController;
-use App\Http\Controllers\SessionController; // if you have this
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Admin\AdminEcaController;
+
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -87,13 +96,28 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function () {
     Route::get('/security', [ProfileController::class, 'security'])->name('dashboard.security');
     Route::put('/security', [ProfileController::class, 'updatePassword'])->name('dashboard.password.update');
 
+    // AI Advisor
+    Route::get('/ai-chat', [AIController::class, 'index'])->name('dashboard.aidash');
+    Route::post('/ai-chat/send', [AIController::class, 'chat'])->name('dashboard.aidash.send');
+    Route::get('/gemini-test', [GeminiTestController::class, 'test']);
+
     // ECAs
     Route::get('/ecas', [ECAController::class, 'index'])->name('dashboard.ecas');
+
+    // Queries
+    Route::get('/query', [UserQueryController::class, 'create'])->name('dashboard.query.create');
+    Route::post('/query', [UserQueryController::class, 'store'])->name('dashboard.query.store');
 
     // Calendar
     Route::get('/calendar', [CalendarController::class, 'myEvents'])->name('calendar.my-events');
     Route::get('/calendar/deadlines', [CalendarController::class, 'deadlines'])->name('calendar.deadlines');
     Route::get('/calendar/sessions', [CalendarController::class, 'sessions'])->name('calendar.sessions');
+
+    // One-to-One Session
+    Route::get('/session', [\App\Http\Controllers\OneToOneController::class, 'create'])
+        ->name('dashboard.session');
+    Route::post('/session', [\App\Http\Controllers\OneToOneController::class, 'store'])
+        ->name('dashboard.session.store');
 
     // Events
     Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
@@ -148,3 +172,4 @@ Route::post('/admin/logout', function () {
     Auth::guard('admin')->logout();
     return redirect('/admin/login')->with('success', 'Logged out successfully.');
 })->name('admin.logout');
+?>

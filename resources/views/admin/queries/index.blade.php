@@ -15,6 +15,7 @@
             <thead class="bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                 <tr>
                     <th class="px-4 py-3">From</th>
+                    <th class="px-4 py-3">Subject</th>
                     <th class="px-4 py-3">Email</th>
                     <th class="px-4 py-3">Message</th>
                     <th class="px-4 py-3">Status</th>
@@ -25,6 +26,7 @@
                 @foreach($queries as $q)
                 <tr class="hover:bg-gray-50">
                     <td class="px-4 py-3 font-medium text-gray-900">{{ $q->name ?? ($q->user->name ?? 'User') }}</td>
+                    <td class="px-4 py-3 text-gray-700">{{ $q->subject ?? '—' }}</td>
                     <td class="px-4 py-3 text-gray-600">{{ $q->email }}</td>
                     <td class="px-4 py-3 text-gray-600">{{ Str::limit($q->message, 80) }}</td>
                     <td class="px-4 py-3">

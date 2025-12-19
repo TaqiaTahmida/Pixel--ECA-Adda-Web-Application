@@ -9,7 +9,7 @@ class UserQuery extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id','name','email','message','reply','status'];
+    protected $fillable = ['user_id','name','email','subject','message','reply','status'];
 
     public function user()
     {
