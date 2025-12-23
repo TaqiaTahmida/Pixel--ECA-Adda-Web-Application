@@ -1,8 +1,18 @@
 @extends('layouts.dashboard')
 
 @section('content')
-<div class="max-w-3xl mx-auto px-6 py-8">
-    <h2 class="text-2xl font-semibold text-orange-600 mb-6">Create New Event</h2>
+<div class="max-w-4xl mx-auto px-6 py-8">
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <p class="text-sm uppercase tracking-[0.3em] text-gray-400">Calendar</p>
+            <h2 class="text-2xl font-semibold text-gray-900">Create New Event</h2>
+            <p class="text-gray-600">Add a new event to your calendar.</p>
+        </div>
+        <a href="{{ route('calendar.my-events') }}"
+           class="px-4 py-2 bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-md shadow-sm hover:border-gray-300 transition">
+            Back to Calendar
+        </a>
+    </div>
 
     @if ($errors->any())
         <div class="mb-4 p-4 bg-red-100 text-red-700 rounded">
@@ -14,7 +24,7 @@
         </div>
     @endif
 
-    <form action="{{ route('events.store') }}" method="POST" class="space-y-6">
+    <form action="{{ route('events.store') }}" method="POST" class="space-y-6 bg-white border border-gray-200 rounded-lg shadow-sm p-6">
         @csrf
 
         {{-- Title --}}
@@ -68,7 +78,7 @@
         {{-- Submit --}}
         <div class="pt-4">
             <button type="submit"
-                    class="px-6 py-2 bg-orange-600 text-white rounded hover:bg-orange-700 transition">
+                    class="px-6 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition">
                 Save Event
             </button>
         </div>

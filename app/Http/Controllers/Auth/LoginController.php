@@ -27,15 +27,15 @@ class LoginController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
-        return back()->withErrors([
-            'email' => 'Invalid email or password.'
-        ])->withInput();
+            return back()->withErrors([
+                'email' => 'Invalid email or password.'
+            ])->withInput();
         }
 
         if ($user->registration_status !== 'approved') {
-        return back()->withErrors([
-        'email' => 'Your registration is not approved yet. Please wait for admin approval.'
-        ]);
+            return back()->withErrors([
+                'email' => 'Your registration is not approved yet. Please wait for admin approval.'
+            ]);
         }
 
         $otp = rand(100000, 999999);
@@ -58,8 +58,8 @@ class LoginController extends Controller
     }
 
     protected function authenticated(Request $request, $user)
-{
-    return redirect('/dashboard/index');
-}
+    {
+        return redirect('/dashboard/index');
+    }
 }
 ?>

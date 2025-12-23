@@ -19,7 +19,7 @@
         @csrf
 
         {{-- Keep admin email --}}
-        <input type="hidden" name="email" value="{{ session('admin_email') }}">
+        <input type="hidden" name="email" value="{{ $email ?? session('admin_email') }}">
 
         <label class="block font-semibold mb-2">Enter OTP:</label>
         <input type="text" name="otp"

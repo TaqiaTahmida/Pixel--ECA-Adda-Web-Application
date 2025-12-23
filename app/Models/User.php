@@ -21,6 +21,7 @@ class User extends Authenticatable
         'package_type',
         'role',
         'payment_status',
+        'registration_status',
         'otp_code',
         'otp_expires_at',
         'interests', // ✅ allow mass assignment of interests
@@ -42,5 +43,33 @@ class User extends Authenticatable
 {
     return $this->hasMany(\App\Models\EcaEnrollment::class);
 }
+
+
+    // ... existing code (fillable, hidden, casts, etc.)
+
+    /**
+     * Relationship: User has many chat messages
+     */
+    public function chatMessages()
+    {
+        return $this->hasMany(ChatMessage::class);
+    }
+
+    /**
+     * Relationship: User has many achievements
+     */
+    public function achievements()
+    {
+        return $this->hasMany(Achievement::class);
+    }
+
+    /**
+     * Relationship: User has many reactions
+     */
+    public function reactions()
+    {
+        return $this->hasMany(Reaction::class);
+    }
+
 
 }

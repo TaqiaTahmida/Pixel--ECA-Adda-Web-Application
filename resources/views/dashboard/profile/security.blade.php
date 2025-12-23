@@ -1,7 +1,7 @@
 @extends('dashboard.profile')
 
 @section('profile-section')
-<form action="{{ route('dashboard.password.update') }}" method="POST" class="space-y-6 max-w-xl">
+<form action="{{ route('dashboard.password.update') }}" method="POST" class="space-y-6 max-w-xl mx-auto">
     @csrf
     @method('PUT')
 

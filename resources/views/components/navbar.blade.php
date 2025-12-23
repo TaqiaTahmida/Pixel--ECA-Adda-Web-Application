@@ -58,16 +58,20 @@
 
             {{-- ================= NO ONE LOGGED IN ================= --}}
             @guest
-                <a href="{{ route('register.step1') }}"
-                   class="px-5 py-2 border-2 border-blue-600 text-blue-600 rounded-lg font-semibold
-                          hover:bg-blue-600 hover:text-white transition">
-                    Register
-                </a>
-
                 <a href="{{ route('login') }}"
+                   class="px-5 py-2 border border-orange-500 text-orange-600 rounded-lg font-semibold
+                          hover:bg-orange-500 hover:text-white transition">
+                    Login
+                </a>
+                <a href="{{ route('register.step1') }}"
                    class="px-5 py-2 bg-orange-500 text-white rounded-lg font-semibold
                           hover:bg-orange-600 transition">
-                    Login
+                    Register
+                </a>
+                <a href="{{ route('blogs.index') }}"
+                   class="px-5 py-2 border border-orange-500 text-orange-600 rounded-lg font-semibold
+                          hover:bg-orange-500 hover:text-white transition">
+                    Blog
                 </a>
             @endguest
 

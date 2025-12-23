@@ -12,14 +12,14 @@ class EnrollmentController extends Controller
 {
     $enrollments = EcaEnrollment::with(['user','eca'])
         ->where('status', 'pending')
-        ->get();
+        ->paginate(10);
 
     return view('admin.enrollments.index', compact('enrollments'));
 }
 
 public function markDone(EcaEnrollment $enrollment)
 {
-    $enrollment->update(['status' => 'approved']);
+    $enrollment->update(['status' => 'enrolled']);
 
     return back()->with('success', 'Enrollment approved.');
 }

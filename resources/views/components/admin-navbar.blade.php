@@ -11,9 +11,11 @@
         <div class="hidden md:flex items-center gap-6 text-sm font-medium text-gray-600">
             <a href="{{ route('admin.dashboard') }}" class="hover:text-orange-500 transition">Dashboard</a>
             <a href="{{ route('admin.registrations.index') }}" class="hover:text-orange-500 transition">Registrations</a>
+            <a href="{{ route('admin.users.index') }}" class="hover:text-orange-500 transition">Users</a>
             <a href="{{ route('admin.ecas.index') }}" class="hover:text-orange-500 transition">ECAs</a>
             <a href="{{ route('admin.enrollments.index') }}" class="hover:text-orange-500 transition">Enrollments</a>
             <a href="{{ route('admin.queries.index') }}" class="hover:text-orange-500 transition">Queries</a>
+            <a href="{{ route('admin.blogs.index') }}" class="hover:text-orange-500 transition">Blogs</a>
         </div>
 
         <div class="flex items-center gap-4">

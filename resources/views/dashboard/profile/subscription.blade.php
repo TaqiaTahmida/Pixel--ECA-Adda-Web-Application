@@ -1,10 +1,10 @@
 @extends('dashboard.profile')
 
 @section('profile-section')
-<div class="max-w-xl space-y-4">
+<div class="max-w-xl mx-auto space-y-4">
     <h3 class="text-lg font-semibold text-gray-800">Current Subscription</h3>
 
-    <div class="bg-white border border-gray-200 rounded p-4">
+    <div class="bg-gray-50 border border-gray-200 rounded-md p-4">
         <p class="text-sm text-gray-600">Plan: 
             <span class="font-medium text-orange-600">{{ $user->package_type === 'tier2' ? 'Tier 2' : 'Tier 1' }}</span>
         </p>

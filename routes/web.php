@@ -11,6 +11,8 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\Auth\OtpController;
+use App\Http\Controllers\BlogController;
+use App\Http\Controllers\Admin\AdminBlogController;
 
 use App\Http\Controllers\ECAController;
 use App\Http\Controllers\OneToOneController;
@@ -30,6 +32,12 @@ use App\Http\Controllers\Admin\RegistrationController;
 use App\Http\Controllers\Admin\EnrollmentController;
 use App\Http\Controllers\Admin\QueryController;
 use App\Http\Controllers\Admin\AdminEcaController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+
+use App\Http\Controllers\InteractionHubController; 
+use App\Http\Controllers\ChatController; 
+use App\Http\Controllers\AchievementController; 
+use App\Http\Controllers\ReactionController;
 
 
 
@@ -40,6 +48,12 @@ use App\Http\Controllers\Admin\AdminEcaController;
 |--------------------------------------------------------------------------
 */
 Route::get('/', [LandingController::class, 'index'])->name('landing');
+Route::get('/blogs', [BlogController::class, 'index'])->name('blogs.index'); 
+Route::get('/blogs/{blog}', [BlogController::class, 'show'])->name('blogs.show');
+Route::middleware('auth')->group(function () { 
+Route::post('/blogs/{blog}/comment', [BlogController::class, 'comment'])->name('blogs.comment'); 
+Route::post('/blogs/{blog}/like', [BlogController::class, 'like'])->name('blogs.like'); 
+Route::delete('/blogs/{blog}/unlike', [BlogController::class, 'unlike'])->name('blogs.unlike'); });
 
 /*
 |--------------------------------------------------------------------------
@@ -86,9 +100,14 @@ Route::get('/my-ecas', [ECAController::class, 'myEcas'])->middleware('auth')->na
 |--------------------------------------------------------------------------
 | USER DASHBOARD
 |--------------------------------------------------------------------------
-*/
 Route::middleware(['auth'])->prefix('dashboard')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
+*/
+Route::middleware(['auth', 'payment.done'])
+    ->prefix('dashboard')
+    ->group(function () {
+        Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
+    // other dashboard routes
 
     // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('dashboard.profile');
@@ -117,6 +136,8 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function () {
     // One-to-One Session
     Route::get('/session', [\App\Http\Controllers\OneToOneController::class, 'create'])
         ->name('dashboard.session');
+    Route::get('/session/instructor/{instructor}', [\App\Http\Controllers\OneToOneController::class, 'showInstructor'])
+        ->name('dashboard.session.instructor');
     Route::post('/session', [\App\Http\Controllers\OneToOneController::class, 'store'])
         ->name('dashboard.session.store');
 
@@ -126,8 +147,23 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function () {
     Route::get('/events/{event}/edit', [EventController::class, 'edit'])->name('events.edit');
     Route::put('/events/{event}', [EventController::class, 'update'])->name('events.update');
     Route::delete('/events/{event}', [EventController::class, 'destroy'])->name('events.destroy');
-});
 
+    // ✅ Interaction Hub main page
+    Route::get('/hub', [InteractionHubController::class, 'index'])
+        ->name('dashboard.hub');
+
+    // ✅ Group Chat
+    Route::post('/chat/send', [ChatController::class, 'store'])
+        ->name('dashboard.chat.send');
+
+    // ✅ Achievements
+    Route::post('/achievements/upload', [AchievementController::class, 'store'])
+        ->name('dashboard.achievements.upload');
+
+    // ✅ Reactions
+    Route::post('/achievements/{id}/react', [ReactionController::class, 'store'])
+        ->name('dashboard.achievements.react');
+});
 /*
 |--------------------------------------------------------------------------
 | ADMIN DASHBOARD + MANAGEMENT
@@ -140,12 +176,19 @@ Route::prefix('admin')->middleware(['auth:admin'])->name('admin.')->group(functi
     // ECA Management
     Route::resource('ecas', AdminEcaController::class);
 
+    // Blog Management
+    Route::resource('blogs', AdminBlogController::class);
+
     // Registrations
     Route::get('/registrations', [RegistrationController::class, 'index'])->name('registrations.index');
     Route::get('/registrations/{user}', [RegistrationController::class, 'show'])->name('registrations.show');
     Route::post('/registrations/{user}/approve', [RegistrationController::class, 'approve'])->name('registrations.approve');
     Route::post('/registrations/{user}/correction', [RegistrationController::class, 'requestCorrection'])->name('registrations.correction');
     Route::post('/registrations/{user}/reject', [RegistrationController::class, 'reject'])->name('registrations.reject');
+
+    // Users
+    Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+    Route::get('/users/{user}', [AdminUserController::class, 'show'])->name('users.show');
 
     // Enrollments
     Route::get('/enrollments', [EnrollmentController::class, 'index'])->name('enrollments.index');
@@ -175,12 +218,27 @@ Route::post('/admin/logout', function () {
 })->name('admin.logout');
 
 //Payment Routes
-Route::post('/payment/checkout', [PaymentController::class, 'checkout'])
-    ->name('payment.checkout');
+Route::middleware('auth')->group(function () {
 
-Route::get('/payment/success', [PaymentController::class, 'success'])
-    ->name('payment.success');
+    // Stripe checkout page
+    Route::get('/payment/checkout', [PaymentController::class, 'checkout'])
+        ->name('payment.checkout');
 
-Route::get('/payment/cancel', [PaymentController::class, 'cancel'])
-    ->name('payment.cancel');
+    // Create Stripe session
+    Route::post('/payment/create-session', [PaymentController::class, 'createSession'])
+        ->name('payment.create');
+
+    // Stripe success callback
+    Route::get('/payment/success', [PaymentController::class, 'success'])
+        ->name('payment.success');
+
+    // Stripe cancel callback
+    Route::get('/payment/cancel', [PaymentController::class, 'cancel'])
+        ->name('payment.cancel');
+
+    // ✅ Payment history (NO payment.done)
+    Route::get('/dashboard/payments', [PaymentController::class, 'history'])
+    ->name('dashboard.payments');
+});
+
 ?>

@@ -1,19 +1,65 @@
-<nav class="w-full bg-white shadow fixed top-0 left-0 z-50">
+<nav class="w-full shadow-sm bg-white fixed top-0 left-0 z-50">
     <div class="max-w-7xl mx-auto flex items-center justify-between py-4 px-6">
-        <div class="flex items-center gap-2">
-            <img src="/landing/images/logo.png" class="w-8" alt="logo">
-            <span class="font-semibold text-lg text-orange-600">ECA Adda</span>
+        <div class="flex items-center gap-3">
+            <a href="{{ route('dashboard.index') }}" class="flex items-center gap-3">
+                <img src="/landing/images/logo.png" class="w-9" alt="ECA Adda logo">
+                <div>
+                    <p class="text-xs uppercase tracking-[0.2em] text-gray-400">User Dashboard</p>
+                    <p class="text-lg font-semibold text-orange-600">ECA Adda</p>
+                </div>
+            </a>
+        </div>
+
+        <div class="hidden md:flex items-center gap-6 text-sm font-medium text-gray-600">
+            <a href="{{ route('dashboard.index') }}"
+               class="{{ request()->routeIs('dashboard.index') ? 'text-orange-600' : 'hover:text-orange-500' }} transition">
+                Dashboard
+            </a>
+            <a href="{{ route('dashboard.profile') }}"
+               class="{{ request()->routeIs('dashboard.profile', 'dashboard.subscription', 'dashboard.security') ? 'text-orange-600' : 'hover:text-orange-500' }} transition">
+                Profile
+            </a>
+            <a href="{{ route('dashboard.ecas') }}"
+               class="{{ request()->routeIs('dashboard.ecas') ? 'text-orange-600' : 'hover:text-orange-500' }} transition">
+                ECAs
+            </a>
+            <a href="{{ route('calendar.my-events') }}"
+               class="{{ request()->routeIs('calendar.*') ? 'text-orange-600' : 'hover:text-orange-500' }} transition">
+                Calendar
+            </a>
+            <a href="{{ route('dashboard.query.create') }}"
+               class="{{ request()->routeIs('dashboard.query.*') ? 'text-orange-600' : 'hover:text-orange-500' }} transition">
+                Queries
+            </a>
+            <a href="{{ route('dashboard.aidash') }}"
+               class="{{ request()->routeIs('dashboard.aidash') ? 'text-orange-600' : 'hover:text-orange-500' }} transition">
+                AI Advisor
+            </a>
+            <a href="{{ route('blogs.index') }}"
+               class="{{ request()->routeIs('blogs.*') ? 'text-orange-600' : 'hover:text-orange-500' }} transition">
+                Blogs
+            </a>
+            @if(optional(Auth::user())->package_type === 'tier2')
+                <a href="{{ route('dashboard.session') }}"
+                   class="{{ request()->routeIs('dashboard.session', 'dashboard.session.instructor') ? 'text-orange-600' : 'hover:text-orange-500' }} transition">
+                    Sessions
+                </a>
+            @endif
         </div>
 
         <div class="flex items-center gap-4">
-            <span class="text-gray-700 font-medium">Welcome, {{ Auth::user()->name }}!</span>
+            <span class="hidden sm:inline text-sm text-gray-600">
+                {{ optional(Auth::user())->name ?? 'User' }}
+            </span>
             <form action="{{ route('logout') }}" method="POST">
                 @csrf
-                <button type="submit" 
-                        class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition">
+                <button type="submit"
+                        class="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-md hover:bg-gray-800 transition">
                     Logout
                 </button>
             </form>
         </div>
     </div>
 </nav>
+
+<div class="pt-20"></div>

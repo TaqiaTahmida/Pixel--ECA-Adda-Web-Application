@@ -8,53 +8,99 @@ use App\Models\Payment;
 
 class PaymentController extends Controller
 {
-    public function checkout(Request $request)
-    {
-        $data = session('register.data');
+    public function checkout()
+{
+    $user = auth()->user();
 
-        if (!$data) {
-            return redirect()->route('register.step1');
-        }
+    $amount = $user->package_type === 'tier1' ? 700 : 1000;
 
-        $amount = $data['package_type'] === 'tier1' ? 700 : 1000;
+    return view('payment.checkout', compact('amount'));
+}
+public function createSession()
+{
+    $user = auth()->user();
 
-        Stripe::setApiKey(config('services.stripe.secret'));
+    $amount = $user->package_type === 'tier1' ? 700 : 1000;
 
-        $session = Session::create([
-            'payment_method_types' => ['card'],
-            'mode' => 'payment',
-            'line_items' => [[
-                'price_data' => [
-                    'currency' => 'bdt',
-                    'product_data' => [
-                        'name' => strtoupper($data['package_type']) . ' Subscription',
-                    ],
-                    'unit_amount' => $amount * 100,
+    Stripe::setApiKey(config('services.stripe.secret'));
+
+    $session = Session::create([
+        'payment_method_types' => ['card'],
+        'line_items' => [[
+            'price_data' => [
+                'currency' => 'bdt',
+                'product_data' => [
+                    'name' => strtoupper($user->package_type) . ' Subscription',
                 ],
-                'quantity' => 1,
-            ]],
-            'success_url' => route('payment.success'),
-            'cancel_url' => route('payment.cancel'),
+                'unit_amount' => $amount * 100,
+            ],
+            'quantity' => 1,
+        ]],
+        'mode' => 'payment',
+
+        // 🔑 Pass user ID securely
+        'metadata' => [
+            'user_id' => $user->id,
+        ],
+
+        'success_url' => route('payment.success'),
+        'cancel_url' => route('payment.cancel'),
+    ]);
+
+    // ✅ Save payment attempt
+    Payment::create([
+        'user_id' => $user->id,
+        'stripe_session_id' => $session->id,
+        'status' => 'pending',
+        'amount' => $amount,
+        'currency' => 'BDT',
+        'package_type' => $user->package_type,
+    ]);
+
+    return redirect($session->url);
+}
+
+public function success(Request $request)
+{
+    $user = auth()->user();
+
+    // Update latest pending payment
+    $payment = Payment::where('user_id', $user->id)
+        ->where('status', 'pending')
+        ->latest()
+        ->first();
+
+    if ($payment) {
+        $payment->update([
+            'status' => 'paid',
         ]);
-
-        Payment::create([
-            'stripe_session_id' => $session->id,
-            'amount' => $amount,
-            'package_type' => $data['package_type'],
-            'status' => 'pending',
-        ]);
-
-        return redirect($session->url);
     }
 
-    public function success()
-    {
-        return view('payment.success');
-    }
+    $user->update([
+        'payment_status' => 'paid',
+        'registration_status' => 'approved',
+    ]);
 
-    public function cancel()
-    {
-        return view('payment.cancel');
-    }
+    session()->forget('register.data');
+
+    return redirect()->route('dashboard.index')
+        ->with('success', 'Payment successful! Registration completed 🎉');
+}
+
+public function cancel()
+{
+    return redirect()->route('payment.checkout')
+        ->with('error', 'Payment was cancelled. Please try again.');
+}
+
+public function history()
+{
+    $payments = Payment::where('user_id', auth()->id())
+        ->latest()
+        ->get();
+
+    return view('dashboard.payments', compact('payments'));
+}
+
 }
 ?>

@@ -67,36 +67,36 @@ class RegisterController extends Controller
         return view('auth.register-step3', compact('data'));
     }
 
-    // For now complete registration (payment to be added later)
-    public function complete(Request $request)
-    {
-        if (!$request->session()->has('register.data')) {
-            return redirect()->route('register.step1');
-        }
-
-        $data = $request->session()->get('register.data');
-
-        $user = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'phone' => $data['phone'] ?? null,
-            'institution' => $data['institution'] ?? null,
-            'education_level' => $data['education_level'] ?? null,
-            'package_type' => $data['package_type'] ?? 'tier2',
-            'payment_status' => 'pending',
-            'registration_status' => 'pending',
-            'password' => Hash::make($data['password']),
-            'role' => 'user',
-        ]);
-
-        // clear session
-        $request->session()->forget('register.data');
-
-        // login the user
-        return redirect()->route('login')->with(
-        'success',
-        'Registration submitted successfully. Please wait for admin approval before logging in.'
-        );
+public function complete(Request $request)
+{
+    if (!$request->session()->has('register.data')) {
+        return redirect()->route('register.step1');
     }
+
+    $data = $request->session()->get('register.data');
+
+    $user = User::create([
+        'name' => $data['name'],
+        'email' => $data['email'],
+        'phone' => $data['phone'] ?? null,
+        'institution' => $data['institution'] ?? null,
+        'education_level' => $data['education_level'],
+        'package_type' => $data['package_type'],
+        'payment_status' => 'pending',
+        'registration_status' => 'pending',
+        'password' => Hash::make($data['password']),
+        'role' => 'user',
+    ]);
+
+    // ✅ login user BEFORE payment
+    Auth::login($user);
+
+    // clear session
+    $request->session()->forget('register.data');
+
+    // ✅ now auth middleware will pass
+    return redirect()->route('payment.checkout');
+}
+
 }
 ?>

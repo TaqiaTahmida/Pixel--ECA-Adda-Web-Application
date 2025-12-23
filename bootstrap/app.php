@@ -10,11 +10,13 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
-    ->withMiddleware(function (Middleware $middleware): void {
-         $middleware->alias([
-        'tier' => \App\Http\Middleware\EnsureTier::class,
-    ]);
-})
+    ->withMiddleware(function (Middleware $middleware) {
+        $middleware->alias([
+            'tier' => \App\Http\Middleware\EnsureTier::class,
+            'payment.done' => \App\Http\Middleware\EnsurePaymentCompleted::class,
+        ]);
+    })
+
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();

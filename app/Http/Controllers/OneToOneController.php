@@ -12,6 +12,25 @@ class OneToOneController extends Controller
         return view('dashboard.session');
     }
 
+    // Show instructor-specific booking page
+    public function showInstructor(string $instructor)
+    {
+        $instructors = [
+            '1' => 'Instructor 1',
+            '2' => 'Instructor 2',
+        ];
+
+        if (!array_key_exists($instructor, $instructors)) {
+            return redirect()->route('dashboard.session')
+                ->with('status', 'Please choose an instructor to continue.');
+        }
+
+        return view('dashboard.session-instructor', [
+            'instructor' => $instructor,
+            'instructorLabel' => $instructors[$instructor],
+        ]);
+    }
+
     // Handle booking submission
     public function store(Request $request)
     {

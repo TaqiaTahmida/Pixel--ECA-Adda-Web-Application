@@ -27,7 +27,7 @@ class AdminLoginController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email' => 'required|email'
+            'email' => 'required|email',
         ]);
 
         $admin = Admin::where('email', $request->email)->first();
@@ -50,21 +50,28 @@ class AdminLoginController extends Controller
         // Store email temporarily for OTP page
         session(['admin_email' => $admin->email]);
 
-        return redirect()->route('admin.login.otp');
+        return redirect()
+            ->route('admin.login.otp', ['email' => $admin->email])
+            ->with('status', 'OTP sent to your email.');
     }
 
 
     /**
      * Show OTP verification page
      */
-    public function showOtpForm()
+    public function showOtpForm(Request $request)
     {
+        $email = $request->query('email', session('admin_email'));
+
         // If no email stored, go back to login
-        if (!session('admin_email')) {
+        if (! $email) {
             return redirect()->route('admin.login');
         }
 
-        return view('auth.admin-login-otp');
+        // keep email in session in case the user refreshes
+        session(['admin_email' => $email]);
+
+        return view('auth.admin-login-otp', compact('email'));
     }
 
 
@@ -74,10 +81,17 @@ class AdminLoginController extends Controller
     public function verifyOtp(Request $request)
     {
         $request->validate([
-            'otp' => 'required|numeric'
+            'otp' => 'required|numeric',
+            'email' => 'nullable|email',
         ]);
 
-        $email = session('admin_email');
+        $email = $request->input('email', session('admin_email'));
+
+        if (! $email) {
+            return redirect()->route('admin.login')->withErrors([
+                'email' => 'Session expired. Please request a new OTP.'
+            ]);
+        }
 
         $admin = Admin::where('email', $email)->first();
 

@@ -1,4 +1,4 @@
-<footer class="w-full py-16 bg-gray-100">
+<footer class="w-full py-16 bg-gray-100 relative z-10">
     <div class="max-w-3xl mx-auto flex flex-col items-center space-y-6">
 
         {{-- Social Icons Row --}}

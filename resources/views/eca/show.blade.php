@@ -69,7 +69,7 @@
                                 Pending Admin Approval
                             </button>
 
-                        @elseif($enrollment->status === 'approved')
+                        @elseif($enrollment->status === 'enrolled')
                             {{-- Approved --}}
                             <button
                                 class="px-6 py-3 bg-green-600 text-white rounded-xl cursor-not-allowed"

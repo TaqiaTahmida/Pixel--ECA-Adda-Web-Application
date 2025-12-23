@@ -6,12 +6,12 @@
     <title>ECA Adda</title>
     @vite('resources/css/app.css')
 </head>
-<body class="bg-white text-gray-900">
+<body class="bg-white text-gray-900 min-h-screen flex flex-col">
 
     {{-- Full Navbar --}}
     @include('components.navbar')
 
-    <main>
+    <main class="flex-1">
         @yield('content')
     </main>
 

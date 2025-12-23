@@ -1,61 +1,51 @@
 @extends('layouts.admin')
 
 @section('content')
-<section class="py-10 bg-gray-50">
-    <div class="max-w-7xl mx-auto px-6">
-
-        {{-- Header --}}
-        <div class="flex items-center justify-between mb-8">
-            <h1 class="text-3xl font-bold text-gray-900">Manage ECAs</h1>
-            <a href="{{ route('admin.ecas.create') }}" 
-               class="px-4 py-2 bg-orange-500 text-white rounded-lg font-semibold hover:bg-orange-600 transition">
-                Add New ECA
-            </a>
+<div class="max-w-7xl mx-auto px-6">
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <p class="text-xs uppercase tracking-[0.3em] text-gray-400">ECAs</p>
+            <h2 class="text-2xl font-semibold text-gray-900">Manage ECAs</h2>
         </div>
+        <a href="{{ route('admin.ecas.create') }}"
+           class="inline-flex items-center rounded-md bg-orange-500 px-4 py-2 text-sm font-medium text-white hover:bg-orange-600 transition">
+            Add New ECA
+        </a>
+    </div>
 
-        {{-- Flash Message --}}
-        @if(session('success'))
-            <div class="mb-6 p-4 bg-green-50 border border-green-200 text-green-800 rounded">
-                {{ session('success') }}
-            </div>
-        @endif
+    @if(session('success'))
+        <div class="mb-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+            {{ session('success') }}
+        </div>
+    @endif
 
-        {{-- ECAs Grid --}}
-        @if($ecas->count() == 0)
-            <p class="text-gray-600">No ECAs available.</p>
-        @else
-            <div class="grid md:grid-cols-3 gap-8">
+    @if($ecas->count() == 0)
+        <p class="text-gray-600">No ECAs available.</p>
+    @else
+        <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            @foreach ($ecas as $eca)
+                <div class="flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition hover:shadow-md">
+                    <img src="{{ $eca->thumbnail ?? '/default-eca.png' }}"
+                         class="h-40 w-full object-cover"
+                         alt="{{ $eca->title }} thumbnail">
 
-                @foreach ($ecas as $eca)
-                <div class="bg-white rounded-xl shadow border overflow-hidden hover:shadow-lg transition flex flex-col">
-
-                    {{-- Thumbnail --}}
-                    <img src="{{ $eca->thumbnail ?? '/default-eca.png' }}" 
-                         class="w-full h-52 object-cover">
-
-                    {{-- Content --}}
-                    <div class="p-5 flex-1 flex flex-col justify-between">
-
+                    <div class="flex flex-1 flex-col justify-between p-4">
                         <div>
-                            <h2 class="text-xl font-bold text-gray-900">{{ $eca->title }}</h2>
-
-                            <p class="text-sm text-orange-600 font-medium mt-1">
+                            <h3 class="text-base font-semibold text-gray-900">{{ $eca->title }}</h3>
+                            <p class="mt-1 text-xs font-medium uppercase tracking-wide text-orange-600">
                                 {{ ucfirst($eca->category) ?? 'General' }}
                             </p>
-
-                            <p class="text-gray-600 text-sm mt-2">
+                            <p class="mt-2 text-sm text-gray-600">
                                 Level: <span class="font-semibold">{{ $eca->level ?? 'Beginner' }}</span>
                             </p>
-
-                            <p class="text-gray-500 text-sm mt-1">
+                            <p class="mt-1 text-sm text-gray-500">
                                 Instructor: {{ $eca->instructor }}
                             </p>
                         </div>
 
-                        {{-- Actions --}}
-                        <div class="mt-4 flex gap-2">
-                            <a href="{{ route('admin.ecas.edit', $eca->id) }}" 
-                               class="flex-1 text-center px-3 py-2 bg-yellow-400 text-white rounded-lg font-medium hover:bg-yellow-500 transition">
+                        <div class="mt-3 flex gap-2">
+                            <a href="{{ route('admin.ecas.edit', $eca->id) }}"
+                               class="flex-1 inline-flex items-center justify-center rounded-md border border-gray-200 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">
                                 Edit
                             </a>
 
@@ -63,20 +53,16 @@
                                   onsubmit="return confirm('Are you sure you want to delete this ECA?');">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" 
-                                        class="w-full px-3 py-2 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 transition">
+                                <button type="submit"
+                                        class="w-full inline-flex items-center justify-center rounded-md bg-red-600 px-3 py-2 text-xs font-semibold text-white hover:bg-red-700">
                                     Delete
                                 </button>
                             </form>
                         </div>
-
                     </div>
                 </div>
-                @endforeach
-
-            </div>
-        @endif
-
-    </div>
-</section>
+            @endforeach
+        </div>
+    @endif
+</div>
 @endsection

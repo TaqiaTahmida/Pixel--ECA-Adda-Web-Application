@@ -1,10 +1,20 @@
 @extends('layouts.dashboard')
 
 @section('content')
-<div class="max-w-3xl mx-auto px-6 py-8">
-    <h2 class="text-2xl font-semibold text-orange-600 mb-6">Edit Event</h2>
+<div class="max-w-4xl mx-auto px-6 py-8">
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <p class="text-sm uppercase tracking-[0.3em] text-gray-400">Calendar</p>
+            <h2 class="text-2xl font-semibold text-gray-900">Edit Event</h2>
+            <p class="text-gray-600">Update details for this event.</p>
+        </div>
+        <a href="{{ route('calendar.my-events') }}"
+           class="px-4 py-2 bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-md shadow-sm hover:border-gray-300 transition">
+            Back to Calendar
+        </a>
+    </div>
 
-    <form action="{{ route('events.update', $event->id) }}" method="POST" class="space-y-6">
+    <form action="{{ route('events.update', $event->id) }}" method="POST" class="space-y-6 bg-white border border-gray-200 rounded-lg shadow-sm p-6">
         @csrf
         @method('PUT')
 
@@ -59,11 +69,11 @@
         {{-- Submit --}}
         <div class="pt-4 flex space-x-4">
             <button type="submit"
-                    class="px-6 py-2 bg-orange-600 text-white rounded hover:bg-orange-700 transition">
+                    class="px-6 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition">
                 Update Event
             </button>
             <a href="{{ route('calendar.my-events') }}"
-               class="px-6 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 transition">
+               class="px-6 py-2 bg-white border border-gray-200 text-gray-700 rounded-md hover:border-gray-300 transition">
                 Cancel
             </a>
         </div>

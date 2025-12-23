@@ -10,6 +10,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             EcaSeeder::class,
+            BlogSeeder::class,
         ]);
     }
 }
