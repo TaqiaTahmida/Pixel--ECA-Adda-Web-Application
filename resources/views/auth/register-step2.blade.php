@@ -10,19 +10,23 @@
             @csrf
 
             <div class="grid gap-4 md:grid-cols-2">
-                <label class="border rounded-lg p-4 cursor-pointer hover:shadow-lg group">
-                    <input type="radio" name="package_type" value="tier1" class="hidden" required>
-                    <div class="font-bold text-lg">Tier 1 — Standard</div>
-                    <p class="text-gray-600 mt-1">Lifetime access to all ECAs (no 1:1 sessions)</p>
-                    <div class="mt-4 text-orange-500 font-semibold">Price: BDT 700tk</div>
-                </label>
+                <div>
+                    <input id="tier1" type="radio" name="package_type" value="tier1" class="peer sr-only" required>
+                    <label for="tier1" class="block border rounded-lg p-4 cursor-pointer transition hover:shadow-lg peer-checked:border-orange-500 peer-checked:bg-orange-50 peer-checked:ring-2 peer-checked:ring-orange-500">
+                        <div class="font-bold text-lg">Tier 1 - Standard</div>
+                        <p class="text-gray-600 mt-1">Lifetime access to all ECAs (no 1:1 sessions)</p>
+                        <div class="mt-4 text-orange-500 font-semibold">Price: BDT 700tk</div>
+                    </label>
+                </div>
 
-                <label class="border rounded-lg p-4 cursor-pointer hover:shadow-lg group">
-                    <input type="radio" name="package_type" value="tier2" class="hidden" required>
-                    <div class="font-bold text-lg">Tier 2 — Premium</div>
-                    <p class="text-gray-600 mt-1">Lifetime access + one-to-one sessions + personal mentorship</p>
-                    <div class="mt-4 text-orange-500 font-semibold">Price: BDT 1000tk</div>
-                </label>
+                <div>
+                    <input id="tier2" type="radio" name="package_type" value="tier2" class="peer sr-only" required>
+                    <label for="tier2" class="block border rounded-lg p-4 cursor-pointer transition hover:shadow-lg peer-checked:border-orange-500 peer-checked:bg-orange-50 peer-checked:ring-2 peer-checked:ring-orange-500">
+                        <div class="font-bold text-lg">Tier 2 - Premium</div>
+                        <p class="text-gray-600 mt-1">Lifetime access + one-to-one sessions + personal mentorship</p>
+                        <div class="mt-4 text-orange-500 font-semibold">Price: BDT 1000tk</div>
+                    </label>
+                </div>
             </div>
 
             <div class="flex justify-between items-center mt-4">

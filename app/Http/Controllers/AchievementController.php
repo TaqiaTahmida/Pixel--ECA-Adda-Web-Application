@@ -33,6 +33,8 @@ class AchievementController extends Controller
             'file_path' => $path,
         ]);
 
-        return redirect()->back();
+        $tab = $request->query('tab', 'achievements');
+
+        return redirect()->route('dashboard.hub', ['tab' => $tab]);
     }
 }

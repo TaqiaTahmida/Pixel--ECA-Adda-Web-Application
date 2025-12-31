@@ -39,6 +39,10 @@
                class="{{ request()->routeIs('blogs.*') ? 'text-orange-600' : 'hover:text-orange-500' }} transition">
                 Blogs
             </a>
+            <a href="{{ route('dashboard.hub') }}"
+               class="{{ request()->routeIs('dashboard.hub') ? 'text-orange-600' : 'hover:text-orange-500' }} transition">
+                Hub
+            </a>
             @if(optional(Auth::user())->package_type === 'tier2')
                 <a href="{{ route('dashboard.session') }}"
                    class="{{ request()->routeIs('dashboard.session', 'dashboard.session.instructor') ? 'text-orange-600' : 'hover:text-orange-500' }} transition">

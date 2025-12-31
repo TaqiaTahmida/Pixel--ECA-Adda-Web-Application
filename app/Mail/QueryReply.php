@@ -13,7 +13,7 @@ class QueryReply extends Mailable
 {
     use Queueable, SerializesModels;
 
- public $query;
+    public $query;
     public $reply;
 
     public function __construct($query, $reply)
@@ -22,19 +22,13 @@ class QueryReply extends Mailable
         $this->reply = $reply;
     }
 
-    public function build()
-    {
-        return $this->subject('Reply to your message - ECA Adda')
-                    ->view('emails.query.reply')
-                    ->with(['query' => $this->query, 'reply' => $this->reply]);
-    }
     /**
      * Get the message envelope.
      */
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Query Reply',
+            subject: 'Reply to your message - ECA Adda',
         );
     }
 
@@ -44,7 +38,8 @@ class QueryReply extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'emails.query.reply',
+            with: ['query' => $this->query, 'reply' => $this->reply],
         );
     }
 

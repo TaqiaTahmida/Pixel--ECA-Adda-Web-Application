@@ -1,8 +1,19 @@
-@extends('layouts.app')
+@extends(auth()->check() ? 'layouts.dashboard' : 'layouts.app')
 
 @section('content')
-<div class="max-w-4xl mx-auto px-6 py-10">
-    <h1 class="text-3xl font-bold text-orange-600 mb-4">{{ $blog->title }}</h1>
+<div class="max-w-4xl mx-auto px-6 py-8">
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-6">
+        <div>
+            <p class="text-sm uppercase tracking-[0.3em] text-gray-400">Blog</p>
+            <h1 class="text-2xl font-semibold text-gray-900">{{ $blog->title }}</h1>
+        </div>
+        @auth
+            <a href="{{ route('dashboard.index') }}"
+               class="inline-flex items-center px-4 py-2 bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-md shadow-sm hover:border-gray-300 transition">
+                Back to Dashboard
+            </a>
+        @endauth
+    </div>
 
     @if($blog->thumbnail)
         <img src="{{ asset('storage/' . $blog->thumbnail) }}" class="rounded mb-6 w-full h-64 object-cover">

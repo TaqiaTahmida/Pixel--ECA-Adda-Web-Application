@@ -22,6 +22,8 @@ class ReactionController extends Controller
             'type' => $request->type,
         ]);
 
-        return redirect()->back();
+        $tab = $request->query('tab', 'achievements');
+
+        return redirect()->route('dashboard.hub', ['tab' => $tab]);
     }
 }
