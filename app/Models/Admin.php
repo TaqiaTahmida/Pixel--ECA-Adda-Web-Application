@@ -27,5 +27,10 @@ class Admin extends Authenticatable
     protected $casts = [
         'otp_expires_at' => 'datetime',
     ];
+
+    public function messages()
+    {
+        return $this->hasMany(AdminMessage::class);
+    }
 }
 ?>

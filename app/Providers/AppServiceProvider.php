@@ -3,8 +3,11 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 use Laravel\Fortify\Contracts\LoginResponse;
 use App\Actions\Fortify\LoginResponse as CustomLoginResponse;
+use App\Models\AdminMessage;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,6 +25,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Keep empty unless you need boot logic
+        View::composer(['components.navbar', 'components.dashboard-navbar'], function ($view) {
+            $unreadAdminMessages = 0;
+            $user = Auth::user();
+
+            if ($user) {
+                $unreadAdminMessages = AdminMessage::where('user_id', $user->id)
+                    ->whereNull('read_at')
+                    ->count();
+            }
+
+            $view->with('unreadAdminMessages', $unreadAdminMessages);
+        });
     }
 }

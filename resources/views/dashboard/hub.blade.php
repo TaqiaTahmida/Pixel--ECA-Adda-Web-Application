@@ -83,6 +83,13 @@
         </section>
 
         <section id="tab-achievements" data-tab-panel="achievements" role="tabpanel" class="space-y-4 hidden">
+            @php
+                $reactionEmojis = [
+                    'like' => '👍',
+                    'clap' => '👏',
+                    'star' => '⭐',
+                ];
+            @endphp
             <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
                 <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
                     <div>
@@ -146,21 +153,25 @@
                             <form method="POST" action="{{ route('dashboard.achievements.react', ['id' => $ach->id, 'tab' => 'achievements']) }}" class="flex flex-wrap gap-2">
                                 @csrf
                                 <button type="submit" name="type" value="like" class="rounded-full border border-orange-200 px-4 py-1 text-xs font-semibold text-orange-700 hover:bg-orange-50 transition">
-                                    Like
+                                    👍
+                                    <span class="sr-only">Like</span>
                                 </button>
                                 <button type="submit" name="type" value="clap" class="rounded-full border border-green-200 px-4 py-1 text-xs font-semibold text-green-700 hover:bg-green-50 transition">
-                                    Clap
+                                    👏
+                                    <span class="sr-only">Clap</span>
                                 </button>
                                 <button type="submit" name="type" value="star" class="rounded-full border border-yellow-200 px-4 py-1 text-xs font-semibold text-yellow-700 hover:bg-yellow-50 transition">
-                                    Star
+                                    ⭐
+                                    <span class="sr-only">Star</span>
                                 </button>
                             </form>
                         </div>
 
                         <div class="mt-3 flex flex-wrap gap-2">
                             @forelse($ach->reactions as $reaction)
+                                @php($emoji = $reactionEmojis[$reaction->type] ?? '💬')
                                 <span class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-600">
-                                    {{ ucfirst($reaction->type) }} by {{ $reaction->user->name }}
+                                    {{ $emoji }} {{ $reaction->user->name }}
                                 </span>
                             @empty
                                 <span class="text-xs text-gray-400">No reactions yet.</span>

@@ -56,6 +56,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Relationship: User has many admin messages
+     */
+    public function adminMessages()
+    {
+        return $this->hasMany(AdminMessage::class);
+    }
+
+    /**
      * Relationship: User has many achievements
      */
     public function achievements()

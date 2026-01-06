@@ -26,6 +26,7 @@ use App\Http\Controllers\User\CalendarController;
 use App\Http\Controllers\User\EventController;
 use App\Http\Controllers\User\AIController;
 use App\Http\Controllers\User\QueryController as UserQueryController;
+use App\Http\Controllers\User\AdminMessageController as UserAdminMessageController;
 
 use App\Http\Controllers\Admin\AdminHomeController;
 use App\Http\Controllers\Admin\RegistrationController;
@@ -189,10 +190,13 @@ Route::prefix('admin')->middleware(['auth:admin'])->name('admin.')->group(functi
     // Users
     Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
     Route::get('/users/{user}', [AdminUserController::class, 'show'])->name('users.show');
+    Route::get('/users/{user}/message', [AdminUserController::class, 'message'])->name('users.message');
+    Route::post('/users/{user}/message', [AdminUserController::class, 'sendMessage'])->name('users.message.send');
 
     // Enrollments
     Route::get('/enrollments', [EnrollmentController::class, 'index'])->name('enrollments.index');
     Route::post('/enrollments/{enrollment}/done', [EnrollmentController::class, 'markDone'])->name('enrollments.done');
+    Route::post('/enrollments/{enrollment}/rollback', [EnrollmentController::class, 'rollback'])->name('enrollments.rollback');
 
     // Queries
     Route::get('/queries', [QueryController::class, 'index'])->name('queries.index');
@@ -239,6 +243,12 @@ Route::middleware('auth')->group(function () {
     // ✅ Payment history (NO payment.done)
     Route::get('/dashboard/payments', [PaymentController::class, 'history'])
     ->name('dashboard.payments');
+});
+
+Route::middleware(['auth'])->prefix('dashboard')->group(function () {
+    Route::get('/messages', [UserAdminMessageController::class, 'index'])->name('dashboard.messages');
+    Route::post('/messages/{message}/read', [UserAdminMessageController::class, 'markRead'])->name('dashboard.messages.read');
+    Route::delete('/messages/{message}', [UserAdminMessageController::class, 'destroy'])->name('dashboard.messages.delete');
 });
 
 ?>

@@ -37,9 +37,19 @@
                     <td class="px-4 py-3 text-gray-700">{{ $user->payment_status ?? '-' }}</td>
                     <td class="px-4 py-3 text-gray-600">{{ optional($user->created_at)->format('d M, Y') }}</td>
                     <td class="px-4 py-3 text-right">
-                        <a href="{{ route('admin.users.show', $user) }}" class="inline-flex items-center rounded-md border border-gray-200 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">
-                            View
-                        </a>
+                        <div class="flex items-center justify-end gap-2">
+                            <a href="{{ route('admin.users.message', $user) }}"
+                               class="inline-flex h-8 w-8 items-center justify-center rounded-md border border-gray-200 text-gray-600 hover:bg-gray-50"
+                               title="Message">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3.75h6m-9 5.25 3.75-3.75h8.25a2.25 2.25 0 0 0 2.25-2.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v10.5a.75.75 0 0 0 1.28.53z" />
+                                </svg>
+                            </a>
+                            <a href="{{ route('admin.users.show', $user) }}"
+                               class="inline-flex items-center rounded-md border border-gray-200 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">
+                                View
+                            </a>
+                        </div>
                     </td>
                 </tr>
                 @empty

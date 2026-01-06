@@ -23,6 +23,19 @@
                     </a>
                 @endif
 
+                <a href="{{ route('dashboard.messages') }}"
+                   class="relative inline-flex h-9 w-9 items-center justify-center rounded-full border border-orange-200 text-orange-600 hover:bg-orange-50 transition"
+                   title="Messages">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3.75h6m-9 5.25 3.75-3.75h8.25a2.25 2.25 0 0 0 2.25-2.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v10.5a.75.75 0 0 0 1.28.53z" />
+                    </svg>
+                    @if(($unreadAdminMessages ?? 0) > 0)
+                        <span class="absolute -top-1 -right-1 min-w-[16px] rounded-full bg-red-500 px-1 text-[10px] font-semibold text-white">
+                            {{ $unreadAdminMessages }}
+                        </span>
+                    @endif
+                </a>
+
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button

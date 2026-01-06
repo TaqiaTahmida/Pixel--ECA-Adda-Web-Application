@@ -23,6 +23,12 @@ class OtpController extends Controller
             return back()->withErrors(['email' => 'Invalid email.']);
         }
 
+        if ($user->registration_status !== 'approved') {
+            return back()->withErrors([
+                'email' => 'Your registration is not approved yet. Please wait for admin approval.'
+            ]);
+        }
+
         if (!$user->otp_code || !$user->otp_expires_at || Carbon::now()->greaterThan($user->otp_expires_at)) {
             return back()->withErrors(['otp' => 'OTP expired. Please request a new OTP.']);
         }

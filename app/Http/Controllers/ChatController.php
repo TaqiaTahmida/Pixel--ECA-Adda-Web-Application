@@ -26,6 +26,8 @@ class ChatController extends Controller
             'message' => $request->message,
         ]);
 
-        return redirect()->back();
+        $tab = $request->query('tab', 'chat');
+
+        return redirect()->route('dashboard.hub', ['tab' => $tab]);
     }
 }
