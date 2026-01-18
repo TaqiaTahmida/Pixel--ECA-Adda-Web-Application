@@ -25,6 +25,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if ($this->app->environment('production')) {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
+
         View::composer(['components.navbar', 'components.dashboard-navbar'], function ($view) {
             $unreadAdminMessages = 0;
             $user = Auth::user();
