@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Clear Laravel config so it reads Railway env vars (Brevo fix)
+php artisan config:clear
+
 # Update Nginx port with Railway's dynamic $PORT
 if [ -z "$PORT" ]; then
   PORT=80
