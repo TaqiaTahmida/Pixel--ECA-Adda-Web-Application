@@ -26,6 +26,10 @@ class AppServiceProvider extends ServiceProvider
             \Illuminate\Support\Facades\URL::forceScheme('https');
         }
 
+        \Illuminate\Support\Facades\Mail::extend('brevo', function (array $config) {
+            return new \App\Mail\Transports\BrevoTransport($config['key']);
+        });
+
         View::composer(['components.navbar', 'components.dashboard-navbar'], function ($view) {
             $unreadAdminMessages = 0;
             $user = Auth::user();

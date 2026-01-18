@@ -50,6 +50,11 @@ return [
             'encryption' => env('MAIL_ENCRYPTION', 'tls'),
         ],
 
+        'brevo' => [
+            'transport' => 'brevo',
+            'key' => env('BREVO_API_KEY'),
+        ],
+
         'ses' => [
             'transport' => 'ses',
         ],
