@@ -10,7 +10,15 @@ class GoogleCalendarService
     public function getClient()
     {
         $client = new Google_Client();
-        $client->setAuthConfig(storage_path('app/room-464006-67a87aa68d1b.json'));
+        
+        $authConfig = env('GOOGLE_SERVICE_ACCOUNT_JSON');
+        
+        if ($authConfig) {
+            $client->setAuthConfig(json_decode($authConfig, true));
+        } else {
+            $client->setAuthConfig(storage_path('app/room-464006-67a87aa68d1b.json'));
+        }
+
         $client->addScope(Google_Service_Calendar::CALENDAR_READONLY);
         return $client;
     }
