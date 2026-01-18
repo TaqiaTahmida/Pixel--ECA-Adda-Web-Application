@@ -16,7 +16,7 @@
     </div>
 
     @if($blog->thumbnail)
-        <img src="{{ asset('storage/' . $blog->thumbnail) }}" class="rounded mb-6 w-full h-64 object-cover">
+        <img src="{{ asset(str_starts_with($blog->thumbnail, '/') ? $blog->thumbnail : 'storage/' . $blog->thumbnail) }}" class="rounded mb-6 w-full h-64 object-cover">
     @endif
 
     <div class="prose max-w-none mb-8">

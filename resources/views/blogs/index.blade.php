@@ -20,7 +20,7 @@
         @foreach($blogs as $blog)
         <a href="{{ route('blogs.show', $blog) }}" class="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition p-4">
             @if($blog->thumbnail)
-                <img src="{{ asset('storage/' . $blog->thumbnail) }}" class="rounded mb-4 w-full h-48 object-cover">
+                <img src="{{ asset(str_starts_with($blog->thumbnail, '/') ? $blog->thumbnail : 'storage/' . $blog->thumbnail) }}" class="rounded mb-4 w-full h-48 object-cover">
             @endif
             <h2 class="text-xl font-semibold text-gray-800 mb-2">{{ $blog->title }}</h2>
             <p class="text-sm text-gray-600">{{ $blog->excerpt }}</p>
