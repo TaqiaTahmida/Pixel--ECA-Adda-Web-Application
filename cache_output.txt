@@ -1,0 +1,22 @@
+
+   InvalidArgumentException 
+
+  Unable to locate a class or view for component [input.label].
+
+  at vendor\laravel\framework\src\Illuminate\View\Compilers\ComponentTagCompiler.php:315
+    311Γûò         if (Str::startsWith($component, 'mail::')) {
+    312Γûò             return $component;
+    313Γûò         }
+    314Γûò 
+  Γ₧£ 315Γûò         throw new InvalidArgumentException(
+    316Γûò             "Unable to locate a class or view for component [{$component}]."
+    317Γûò         );
+    318Γûò     }
+    319Γûò
+
+  1   vendor\laravel\framework\src\Illuminate\View\Compilers\ComponentTagCompiler.php:235
+      Illuminate\View\Compilers\ComponentTagCompiler::componentClass("input.label")
+
+  2   vendor\laravel\framework\src\Illuminate\View\Compilers\ComponentTagCompiler.php:220
+      Illuminate\View\Compilers\ComponentTagCompiler::componentString("input.label", ["'name'", "'Name'"])
+
