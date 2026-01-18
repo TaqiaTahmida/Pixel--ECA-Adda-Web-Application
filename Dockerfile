@@ -16,11 +16,8 @@ RUN docker-php-ext-install \
     pdo \
     pdo_mysql \
     mbstring \
-    tokenizer \
     bcmath \
     xml \
-    ctype \
-    fileinfo \
     gd
 
 # Install Composer
@@ -58,11 +55,8 @@ RUN docker-php-ext-install \
     pdo \
     pdo_mysql \
     mbstring \
-    tokenizer \
     bcmath \
-    xml \
-    ctype \
-    fileinfo
+    xml
 
 # Configure Nginx
 COPY nginx.conf /etc/nginx/http.d/default.conf
