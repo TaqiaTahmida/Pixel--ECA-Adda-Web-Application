@@ -21,6 +21,11 @@ class GoogleCalendarService
                 \Log::error('Google Calendar JSON Decode Error: ' . json_last_error_msg());
                 throw new \Exception('Invalid JSON provided for Google Service Account.');
             }
+
+            // Fix for escaped newlines in the private key from environment variables
+            if (isset($decoded['private_key'])) {
+                $decoded['private_key'] = str_replace('\\n', "\n", $decoded['private_key']);
+            }
             
             $client->setAuthConfig($decoded);
         } else {
