@@ -36,6 +36,13 @@ php artisan migrate --force
 # Run seeders
 php artisan db:seed --force
 
+# -----------------------------------------------------------------------------
+# FINAL PERMISSION FIX: Ensure www-data owns everything created by root above
+# -----------------------------------------------------------------------------
+echo "Finalizing permissions for www-data..."
+chown -R www-data:www-data /app/storage /app/bootstrap/cache
+chmod -R 775 /app/storage /app/bootstrap/cache
+
 # Start PHP-FPM in background
 php-fpm -D
 
